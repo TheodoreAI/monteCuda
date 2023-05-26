@@ -1,0 +1,32 @@
+srun: job 983680 queued and waiting for resources
+srun: job 983680 has been allocated resources
+srun: error: ioctl(TIOCGWINSZ): Inappropriate ioctl for device
+srun: error: Not using a pseudo-terminal, disregarding --pty option
+Number of Trials =       1024, Blocksize =        8, MegaTrials/Second =    28.5714, Probability =  26.27%
+Number of Trials =       1024, Blocksize =       32, MegaTrials/Second =    30.3030, Probability =  25.49%
+Number of Trials =       1024, Blocksize =       64, MegaTrials/Second =    30.3030, Probability =  27.44%
+Number of Trials =       1024, Blocksize =      128, MegaTrials/Second =    30.3030, Probability =  26.56%
+Number of Trials =       4096, Blocksize =        8, MegaTrials/Second =   121.2121, Probability =  26.56%
+Number of Trials =       4096, Blocksize =       32, MegaTrials/Second =   121.2121, Probability =  26.17%
+Number of Trials =       4096, Blocksize =       64, MegaTrials/Second =   121.2121, Probability =  27.00%
+Number of Trials =       4096, Blocksize =      128, MegaTrials/Second =   125.0000, Probability =  26.22%
+Number of Trials =      16384, Blocksize =        8, MegaTrials/Second =   432.4324, Probability =  26.90%
+Number of Trials =      16384, Blocksize =       32, MegaTrials/Second =   457.1428, Probability =  27.28%
+Number of Trials =      16384, Blocksize =       64, MegaTrials/Second =   484.8485, Probability =  26.55%
+Number of Trials =      16384, Blocksize =      128, MegaTrials/Second =   500.0000, Probability =  26.70%
+Number of Trials =      65536, Blocksize =        8, MegaTrials/Second =  1336.8146, Probability =  26.90%
+Number of Trials =      65536, Blocksize =       32, MegaTrials/Second =  1757.9399, Probability =  26.51%
+Number of Trials =      65536, Blocksize =       64, MegaTrials/Second =  1796.4913, Probability =  27.05%
+Number of Trials =      65536, Blocksize =      128, MegaTrials/Second =  1807.5904, Probability =  26.72%
+Number of Trials =     262144, Blocksize =        8, MegaTrials/Second =  2812.2210, Probability =  26.77%
+Number of Trials =     262144, Blocksize =       32, MegaTrials/Second =  4654.5454, Probability =  26.79%
+Number of Trials =     262144, Blocksize =       64, MegaTrials/Second =  4896.5928, Probability =  26.95%
+Number of Trials =     262144, Blocksize =      128, MegaTrials/Second =  4946.8598, Probability =  26.73%
+Number of Trials =    1048576, Blocksize =        8, MegaTrials/Second =  4024.5640, Probability =  26.93%
+Number of Trials =    1048576, Blocksize =       32, MegaTrials/Second =  9711.9144, Probability =  26.91%
+Number of Trials =    1048576, Blocksize =       64, MegaTrials/Second =  9834.3338, Probability =  26.86%
+Number of Trials =    1048576, Blocksize =      128, MegaTrials/Second = 10023.8606, Probability =  26.89%
+Number of Trials =    2097152, Blocksize =        8, MegaTrials/Second =  4355.1302, Probability =  26.87%
+Number of Trials =    2097152, Blocksize =       32, MegaTrials/Second = 11842.4281, Probability =  26.88%
+Number of Trials =    2097152, Blocksize =       64, MegaTrials/Second = 11991.9489, Probability =  26.81%
+Number of Trials =    2097152, Blocksize =      128, MegaTrials/Second = 12358.2875, Probability =  26.85%

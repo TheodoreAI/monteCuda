@@ -29,7 +29,7 @@
 #define NUMBLOCKS	( NUMTRIALS / BLOCKSIZE )
 
 
-//#define CSV
+#define CSV
 
 // the pins; numbers are constants:
 #define PinAx	3.0f
@@ -170,19 +170,17 @@ MonteCarlo(
         dsuccesses[gid] = 0;
 
 	// randomize everything:
-	?????
+	float distA = Length(PinAx - dholeaxs[gid], PinAy - dholeays[gid]);
+    float distB = Length(PinBx - dholebxs[gid], PinBy - dholebys[gid]);
+    float distC = Length(PinCx - dholecxs[gid], PinCy - dholecys[gid]);
 
-	?????
-	if( ????? )
-	{
-		?????
-		if( ????? )
-		{
-			?????
-			if( ????? )
-        			dsuccesses[gid] = 1;
-		}
+	// A pin fits into its hole if: d+pinRadius ≤ holeRadius (do it for all distances)
+    if( distA + PinAr <= dholears[gid] ){
+    	if( distB + PinBr <= dholebrs[gid] ){
+            	if( distC + PinCr <= dholecrs[gid] ) dsuccesses[gid] = 1;
+        	}
 	}
+
 }
 
 
@@ -229,40 +227,46 @@ main( int argc, char *argv[ ] )
         float *dholecxs, *dholecys, *dholecrs;
         int   *dsuccesses;
 
+
+	// The CUDA pattern it appears is one that goes from the host (CPU) 
+	// to the device (GPU) and back to the (CPU) once the computation on the CUDA kernel gets executed.
+	// It is interesting to note that this computation is just about passing arrays from one place to another, transforming them, and passing them back. 
 	// *********************************
-	// ***** be sure to use NUMTRIALS*sizeof(float) as the number of bytes to malloc, not sizeof(hholeaxs)  *****
-	// (because hholeaxs is a float *, its sizeof is only 8)
+	// Hint from email:
+	// When you call cudaMalloc, do it like this:
+	// cudaMalloc( (void **)(&dholeaxs),   NUMTRIALS*sizeof(float) );
+	// not like this:
+	// cudaMalloc( (void **)(&dholeaxs),   sizeof(hholeaxs) );
 	// *********************************
-	cudaMalloc( ????? );
-	cudaMalloc( ????? );
-	cudaMalloc( ????? );
 
-	cudaMalloc( ????? );
-	cudaMalloc( ????? );
-	cudaMalloc( ????? );
+	cudaMalloc( (void**)&dholeaxs, NUMTRIALS * sizeof(float) );
+	cudaMalloc( (void**)&dholeays, NUMTRIALS * sizeof(float) );
+	cudaMalloc( (void**)&dholears, NUMTRIALS * sizeof(float) );
 
-	cudaMalloc( ????? );
-	cudaMalloc( ????? );
-	cudaMalloc( ????? );
+	cudaMalloc( (void**)&dholebxs, NUMTRIALS * sizeof(float) );
+	cudaMalloc( (void**)&dholebys, NUMTRIALS * sizeof(float) );
+	cudaMalloc( (void**)&dholebrs, NUMTRIALS * sizeof(float) );
 
-	cudaMalloc( ????? );
+	cudaMalloc( (void**)&dholecxs, NUMTRIALS * sizeof(float) );
+	cudaMalloc( (void**)&dholecys, NUMTRIALS * sizeof(float) );
+	cudaMalloc( (void**)&dholecrs, NUMTRIALS * sizeof(float) );
+
+	cudaMalloc( (void**)&dsuccesses, NUMTRIALS * sizeof(int) );
 
 	CudaCheckError( 1 );
 
+	// Copy host (CPU) memory to device (GPU): 
+	cudaMemcpy( dholeaxs, hholeaxs, NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
+	cudaMemcpy( dholeays, hholeays, NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
+	cudaMemcpy( dholears, hholears, NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
 
-	// copy host memory to the device:
+	cudaMemcpy( dholebxs, hholebxs, NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
+	cudaMemcpy( dholebys, hholebys, NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
+	cudaMemcpy( dholebrs, hholebrs, NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
 
-	cudaMemcpy( ?????,  ?????,  NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
-	cudaMemcpy( ?????,  ?????,  NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
-	cudaMemcpy( ?????,  ?????,  NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
-
-	cudaMemcpy( ?????,  ?????,  NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
-	cudaMemcpy( ?????,  ?????,  NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
-	cudaMemcpy( ?????,  ?????,  NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
-
-	cudaMemcpy( ?????,  ?????,  NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
-	cudaMemcpy( ?????,  ?????,  NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
-	cudaMemcpy( ?????,  ?????,  NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
+	cudaMemcpy( dholecxs, hholecxs, NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
+	cudaMemcpy( dholecys, hholecys, NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
+	cudaMemcpy( dholecrs, hholecrs, NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
 
 	CudaCheckError( 2 );
 
@@ -286,7 +290,8 @@ main( int argc, char *argv[ ] )
 	CudaCheckError( 5 );
 
 	// execute the kernel:
-	MonteCarlo<<< grid, threads >>>( ????? );
+	// All the allocated and device arrays get executed on the CUDA kernel
+	MonteCarlo<<< grid, threads >>>( dholeaxs, dholeays, dholears, dholebxs, dholebys, dholebrs, dholecxs, dholecys, dholecrs, dsuccesses );
 
 	// record the stop event:
 	cudaEventRecord( stop, NULL );
@@ -298,8 +303,8 @@ main( int argc, char *argv[ ] )
 	cudaEventElapsedTime( &msecTotal, start, stop );
 	CudaCheckError( 6 );
 
-	// copy result from the device to the host:
-	cudaMemcpy( ?????, ?????, NUMTRIALS *sizeof(int), cudaMemcpyDeviceToHost );
+	// copy result from the device (GPU) back to the host (CPU):
+	cudaMemcpy(hsuccesses, dsuccesses, NUMTRIALS *sizeof(int), cudaMemcpyDeviceToHost );
 	CudaCheckError( 7 );
 
 	// compute the sum :
